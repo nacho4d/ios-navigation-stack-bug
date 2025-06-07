@@ -13,11 +13,13 @@ struct RootNavigationView: View {
     enum Destination: Hashable {
         case login
     }
-    @State private var path = [Destination]()
+
+    @State private var path = NavigationPath()  // Changed from [Destination]()
+
     var body: some View {
         NavigationStack(path: $path) {
             WelcomeScreen(onGoToLogin: {
-                path.append(.login)
+                path.append(Destination.login)
             })
             .navigationDestination(for: Destination.self) { destination in
                 switch destination {
@@ -34,6 +36,7 @@ struct RootNavigationView: View {
 
 struct WelcomeScreen: View {
     let onGoToLogin: () -> Void
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Welcome")
@@ -61,6 +64,7 @@ struct LoginScreen: View {
         }
     }
     @State var modalType: ModalType?
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Login")
@@ -92,7 +96,8 @@ struct LoginScreen: View {
 // MARK: - First Level Modal
 
 struct MainNavigationView: View {
-    @State var path: [Destination] = []
+
+    @State var path = NavigationPath()  // Changed from [Destionation] = []
     enum Destination: Hashable {
         case detail
     }
@@ -110,7 +115,9 @@ struct MainNavigationView: View {
 }
 
 struct HomeScreen: View {
+
     @State var modalType: ModalType?
+
     enum ModalType: String, Identifiable {
         case loan
         var id: String {
@@ -153,17 +160,19 @@ struct LoanNavigationScreen: View {
         case confirm
         case done
     }
-    @State private var path: [Destination] = []
+    @State private var path = NavigationPath()  // Changed from [Destination] = []
+
+
     var body: some View {
         NavigationStack(path: $path) {
             LoanSettingScreen(onGoToConfirm: {
-                path.append(.confirm)
+                path.append(Destination.confirm)
             })
             .navigationDestination(for: Destination.self) { destination in
                 switch destination {
                 case .confirm:
                     LoanConfirmScreen {
-                        path.append(.done)
+                        path.append(Destination.done)
                     }
                 case .done:
                     LoanCompleteScreen()
@@ -175,6 +184,7 @@ struct LoanNavigationScreen: View {
 
 struct LoanSettingScreen: View {
     let onGoToConfirm: () -> Void
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Loan Setting")
@@ -196,6 +206,7 @@ struct LoanSettingScreen: View {
 
 struct LoanConfirmScreen: View {
     let onGoToDone: () -> Void
+
     var body: some View {
         VStack(spacing: 20) {
             Text("Loan Confirm")
