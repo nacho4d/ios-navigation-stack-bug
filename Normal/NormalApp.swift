@@ -11,6 +11,7 @@ import SwiftUI
 struct ExampleTransitionApp: App {
     var body: some Scene {
         WindowGroup {
+            //RootNavigationView()
             ContentView()
         }
     }
