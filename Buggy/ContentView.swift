@@ -13,8 +13,16 @@ struct RootNavigationView: View {
     enum Destination: Hashable {
         case login
     }
+    enum ModalType: String, Identifiable {
+        case view3
+        var id: String {
+            return self.rawValue
+        }
+    }
 
     @State private var path = NavigationPath()  // Changed from [Destination]()
+
+    @State var modalType: ModalType?
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -24,10 +32,19 @@ struct RootNavigationView: View {
             .navigationDestination(for: Destination.self) { destination in
                 switch destination {
                 case .login:
-                    LoginScreen()
+                    LoginScreen {
+                        modalType = .view3
+                    }
                 }
             }
         }
+        .fullScreenCover(item: $modalType) { modal in
+            switch modal {
+            case .view3:
+                MainNavigationView()
+            }
+        }
+
 
     }
 }
@@ -57,13 +74,8 @@ struct WelcomeScreen: View {
 }
 
 struct LoginScreen: View {
-    enum ModalType: String, Identifiable {
-        case view3
-        var id: String {
-            return self.rawValue
-        }
-    }
-    @State var modalType: ModalType?
+
+    let onShowHome: () -> Void
 
     var body: some View {
         VStack(spacing: 20) {
@@ -72,7 +84,7 @@ struct LoginScreen: View {
                 .fontWeight(.bold)
 
             Button("Show 'Home'") {
-                modalType = .view3
+                onShowHome()
             }
             .padding()
             .background(Color.green)
@@ -81,15 +93,6 @@ struct LoginScreen: View {
         }
         .navigationTitle("Login")
         .navigationBarTitleDisplayMode(.inline)
-        .fullScreenCover(
-            item: $modalType,
-            content: { modal in
-                switch modal {
-                case .view3:
-                    MainNavigationView()
-                }
-            }
-        )
     }
 }
 
